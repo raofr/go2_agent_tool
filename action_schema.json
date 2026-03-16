@@ -1,0 +1,322 @@
+{
+  "version": "1.0.0",
+  "tool": "go2_agent_tool.cli",
+  "endpoint_default": "192.168.51.213:50051",
+  "command": "action",
+  "base_required": [
+    "session_id",
+    "action"
+  ],
+  "fields": {
+    "session_id": {
+      "type": "string",
+      "cli_flag": "--session-id",
+      "required": true
+    },
+    "action": {
+      "type": "string",
+      "cli_flag": "--action",
+      "required": true,
+      "enum": [
+        "ACTION_DAMP",
+        "ACTION_BALANCE_STAND",
+        "ACTION_STOP_MOVE",
+        "ACTION_STAND_UP",
+        "ACTION_STAND_DOWN",
+        "ACTION_RECOVERY_STAND",
+        "ACTION_EULER",
+        "ACTION_MOVE",
+        "ACTION_SIT",
+        "ACTION_RISE_SIT",
+        "ACTION_SPEED_LEVEL",
+        "ACTION_HELLO",
+        "ACTION_STRETCH",
+        "ACTION_SWITCH_JOYSTICK",
+        "ACTION_CONTENT",
+        "ACTION_HEART",
+        "ACTION_POSE",
+        "ACTION_SCRAPE",
+        "ACTION_FRONT_FLIP",
+        "ACTION_FRONT_JUMP",
+        "ACTION_FRONT_POUNCE",
+        "ACTION_DANCE1",
+        "ACTION_DANCE2",
+        "ACTION_LEFT_FLIP",
+        "ACTION_BACK_FLIP",
+        "ACTION_HAND_STAND",
+        "ACTION_FREE_WALK",
+        "ACTION_FREE_BOUND",
+        "ACTION_FREE_JUMP",
+        "ACTION_FREE_AVOID",
+        "ACTION_CLASSIC_WALK",
+        "ACTION_WALK_UPRIGHT",
+        "ACTION_CROSS_STEP",
+        "ACTION_AUTO_RECOVER_SET",
+        "ACTION_AUTO_RECOVER_GET",
+        "ACTION_STATIC_WALK",
+        "ACTION_TROT_RUN",
+        "ACTION_ECONOMIC_GAIT",
+        "ACTION_SWITCH_AVOID_MODE"
+      ]
+    },
+    "vx": {
+      "type": "number",
+      "cli_flag": "--vx",
+      "default": 0.0,
+      "required_for": [
+        "ACTION_MOVE"
+      ]
+    },
+    "vy": {
+      "type": "number",
+      "cli_flag": "--vy",
+      "default": 0.0,
+      "required_for": [
+        "ACTION_MOVE"
+      ]
+    },
+    "vyaw": {
+      "type": "number",
+      "cli_flag": "--vyaw",
+      "default": 0.0,
+      "required_for": [
+        "ACTION_MOVE"
+      ]
+    },
+    "roll": {
+      "type": "number",
+      "cli_flag": "--roll",
+      "default": 0.0,
+      "required_for": [
+        "ACTION_EULER"
+      ]
+    },
+    "pitch": {
+      "type": "number",
+      "cli_flag": "--pitch",
+      "default": 0.0,
+      "required_for": [
+        "ACTION_EULER"
+      ]
+    },
+    "yaw": {
+      "type": "number",
+      "cli_flag": "--yaw",
+      "default": 0.0,
+      "required_for": [
+        "ACTION_EULER"
+      ]
+    },
+    "level": {
+      "type": "integer",
+      "cli_flag": "--level",
+      "default": 0,
+      "required_for": [
+        "ACTION_SPEED_LEVEL"
+      ]
+    },
+    "flag": {
+      "type": "boolean",
+      "cli_flag": "--flag",
+      "default": false,
+      "allowed_for": [
+        "ACTION_SWITCH_JOYSTICK",
+        "ACTION_HAND_STAND",
+        "ACTION_AUTO_RECOVER_SET",
+        "ACTION_SWITCH_AVOID_MODE"
+      ]
+    }
+  },
+  "action_groups": {
+    "no_extra_args": [
+      "ACTION_DAMP",
+      "ACTION_BALANCE_STAND",
+      "ACTION_STOP_MOVE",
+      "ACTION_STAND_UP",
+      "ACTION_STAND_DOWN",
+      "ACTION_RECOVERY_STAND",
+      "ACTION_SIT",
+      "ACTION_RISE_SIT",
+      "ACTION_HELLO",
+      "ACTION_STRETCH",
+      "ACTION_CONTENT",
+      "ACTION_HEART",
+      "ACTION_POSE",
+      "ACTION_SCRAPE",
+      "ACTION_FRONT_FLIP",
+      "ACTION_FRONT_JUMP",
+      "ACTION_FRONT_POUNCE",
+      "ACTION_DANCE1",
+      "ACTION_DANCE2",
+      "ACTION_LEFT_FLIP",
+      "ACTION_BACK_FLIP",
+      "ACTION_FREE_WALK",
+      "ACTION_FREE_BOUND",
+      "ACTION_FREE_JUMP",
+      "ACTION_FREE_AVOID",
+      "ACTION_CLASSIC_WALK",
+      "ACTION_WALK_UPRIGHT",
+      "ACTION_CROSS_STEP",
+      "ACTION_AUTO_RECOVER_GET",
+      "ACTION_STATIC_WALK",
+      "ACTION_TROT_RUN",
+      "ACTION_ECONOMIC_GAIT"
+    ],
+    "velocity_required": [
+      "ACTION_MOVE"
+    ],
+    "euler_required": [
+      "ACTION_EULER"
+    ],
+    "level_required": [
+      "ACTION_SPEED_LEVEL"
+    ],
+    "flag_optional": [
+      "ACTION_SWITCH_JOYSTICK",
+      "ACTION_HAND_STAND",
+      "ACTION_AUTO_RECOVER_SET",
+      "ACTION_SWITCH_AVOID_MODE"
+    ]
+  },
+  "json_schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "go2_agent_tool_action_args",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "session_id",
+      "action"
+    ],
+    "properties": {
+      "session_id": {
+        "type": "string",
+        "minLength": 1
+      },
+      "action": {
+        "type": "string",
+        "enum": [
+          "ACTION_DAMP",
+          "ACTION_BALANCE_STAND",
+          "ACTION_STOP_MOVE",
+          "ACTION_STAND_UP",
+          "ACTION_STAND_DOWN",
+          "ACTION_RECOVERY_STAND",
+          "ACTION_EULER",
+          "ACTION_MOVE",
+          "ACTION_SIT",
+          "ACTION_RISE_SIT",
+          "ACTION_SPEED_LEVEL",
+          "ACTION_HELLO",
+          "ACTION_STRETCH",
+          "ACTION_SWITCH_JOYSTICK",
+          "ACTION_CONTENT",
+          "ACTION_HEART",
+          "ACTION_POSE",
+          "ACTION_SCRAPE",
+          "ACTION_FRONT_FLIP",
+          "ACTION_FRONT_JUMP",
+          "ACTION_FRONT_POUNCE",
+          "ACTION_DANCE1",
+          "ACTION_DANCE2",
+          "ACTION_LEFT_FLIP",
+          "ACTION_BACK_FLIP",
+          "ACTION_HAND_STAND",
+          "ACTION_FREE_WALK",
+          "ACTION_FREE_BOUND",
+          "ACTION_FREE_JUMP",
+          "ACTION_FREE_AVOID",
+          "ACTION_CLASSIC_WALK",
+          "ACTION_WALK_UPRIGHT",
+          "ACTION_CROSS_STEP",
+          "ACTION_AUTO_RECOVER_SET",
+          "ACTION_AUTO_RECOVER_GET",
+          "ACTION_STATIC_WALK",
+          "ACTION_TROT_RUN",
+          "ACTION_ECONOMIC_GAIT",
+          "ACTION_SWITCH_AVOID_MODE"
+        ]
+      },
+      "vx": {
+        "type": "number"
+      },
+      "vy": {
+        "type": "number"
+      },
+      "vyaw": {
+        "type": "number"
+      },
+      "roll": {
+        "type": "number"
+      },
+      "pitch": {
+        "type": "number"
+      },
+      "yaw": {
+        "type": "number"
+      },
+      "level": {
+        "type": "integer"
+      },
+      "flag": {
+        "type": "boolean"
+      }
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "action": {
+              "const": "ACTION_MOVE"
+            }
+          },
+          "required": [
+            "action"
+          ]
+        },
+        "then": {
+          "required": [
+            "vx",
+            "vy",
+            "vyaw"
+          ]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "action": {
+              "const": "ACTION_EULER"
+            }
+          },
+          "required": [
+            "action"
+          ]
+        },
+        "then": {
+          "required": [
+            "roll",
+            "pitch",
+            "yaw"
+          ]
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "action": {
+              "const": "ACTION_SPEED_LEVEL"
+            }
+          },
+          "required": [
+            "action"
+          ]
+        },
+        "then": {
+          "required": [
+            "level"
+          ]
+        }
+      }
+    ]
+  }
+}
