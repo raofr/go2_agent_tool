@@ -47,6 +47,7 @@ OpenClaw recommended (Node.js):
 cd node
 node src/cli.js --endpoint 192.168.51.213:50051 status
 node src/cli.js --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name default
+node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_RECOVERY_STAND
 node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_UP
 node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_DOWN
 node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>
@@ -57,6 +58,7 @@ Python equivalent:
 ```bash
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 status
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name default
+python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_RECOVERY_STAND
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_UP
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_DOWN
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 close-session --session-id <id>
@@ -75,8 +77,11 @@ Default non-parallel flow:
 
 1. force-close-owner --owner openclaw
 2. open-session --owner openclaw --session-name <task>
-3. action --session-id <id> --action <ACTION_...>
-4. close-session --session-id <id>
+3. action --session-id <id> --action ACTION_RECOVERY_STAND
+4. action --session-id <id> --action <ACTION_...>
+5. close-session --session-id <id>
+
+Important note: many motion actions should run only after ACTION_RECOVERY_STAND is executed in the same session.
 
 Parallel flow:
 

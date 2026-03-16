@@ -144,12 +144,18 @@ All supported values for `--action`:
 
 ## Default Task Policy
 
+Important motion prerequisite:
+
+- For most locomotion and posture actions, call `ACTION_RECOVERY_STAND` first after opening a session.
+- If robot state is uncertain, run `ACTION_RECOVERY_STAND` again before sending the next complex action.
+
 For each non-parallel task:
 
 1. `node src/cli.js --endpoint 192.168.51.213:50051 force-close-owner --owner openclaw`
 2. `node src/cli.js --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name <task_name>`
-3. `node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action <ACTION_...>`
-4. `node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>`
+3. `node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_RECOVERY_STAND`
+4. `node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action <ACTION_...>`
+5. `node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>`
 
 For parallel task:
 
@@ -182,6 +188,7 @@ Use this file to drive tool/agent argument validation for `action` command.
 
 ```bash
 node src/cli.js --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name smoke
+node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_RECOVERY_STAND
 node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_UP
 node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_DOWN
 node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>
