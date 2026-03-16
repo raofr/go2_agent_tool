@@ -2,7 +2,9 @@
 
 ## Purpose
 
-Use this Python client tool to control GO2 through gRPC service only.
+Use this GO2 client tool to control GO2 through gRPC service only.
+
+For OpenClaw, use Node.js CLI as first choice. Python is fallback only.
 
 ## Download Source
 
@@ -16,7 +18,14 @@ Alternative:
 
 ## Install
 
-Option A (uv, recommended):
+OpenClaw preferred (Node.js):
+
+```bash
+cd go2_agent_tool/node
+npm install
+```
+
+Python fallback Option A (uv):
 
 ```bash
 cd go2_agent_tool
@@ -25,7 +34,7 @@ source .venv/bin/activate
 uv pip install -r requirements.txt
 ```
 
-Option B (venv):
+Python fallback Option B (venv):
 
 ```bash
 cd go2_agent_tool
@@ -35,7 +44,29 @@ python -m pip install -U pip
 python -m pip install -r requirements.txt
 ```
 
+## Dependency Declaration
+
+Required for OpenClaw-first path:
+
+- Node.js >= 18
+- npm
+- `@grpc/grpc-js` and `@grpc/proto-loader` (installed by `npm install`)
+
+Optional Python fallback:
+
+- Python >= 3.10
+- `grpcio`, `protobuf` from `requirements.txt`
+
 ## Service Precheck (must do before action)
+
+OpenClaw preferred (Node.js):
+
+```bash
+cd node
+node src/cli.js --endpoint 192.168.51.213:50051 status
+```
+
+Python equivalent:
 
 ```bash
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 status
@@ -48,6 +79,12 @@ If RPC fails, ask operator to start server on dock host (`192.168.51.213`) first
 Default endpoint is `192.168.51.213:50051`, but this may differ per network setup.
 
 If endpoint is wrong, user must provide the actual dock host IP and update all CLI calls:
+
+```bash
+node src/cli.js --endpoint <REAL_DOCK_IP>:50051 status
+```
+
+Python fallback:
 
 ```bash
 python -m go2_agent_tool.cli --endpoint <REAL_DOCK_IP>:50051 status
@@ -109,15 +146,21 @@ All supported values for `--action`:
 
 For each non-parallel task:
 
-1. `python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 force-close-owner --owner openclaw`
-2. `python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name <task_name>`
-3. `python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 action --session-id <id> --action <ACTION_...>`
-4. `python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 close-session --session-id <id>`
+1. `node src/cli.js --endpoint 192.168.51.213:50051 force-close-owner --owner openclaw`
+2. `node src/cli.js --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name <task_name>`
+3. `node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action <ACTION_...>`
+4. `node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>`
 
 For parallel task:
 
 - open session with `--parallel`
 - do not force-close owner sessions.
+
+Node.js command template:
+
+```bash
+node src/cli.js --endpoint 192.168.51.213:50051 <subcommand ...>
+```
 
 ## Action Parameter JSON Mapping
 
@@ -138,11 +181,13 @@ Use this file to drive tool/agent argument validation for `action` command.
 ## Minimal Smoke Test
 
 ```bash
-python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name smoke
-python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_UP
-python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_DOWN
-python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 close-session --session-id <id>
+node src/cli.js --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name smoke
+node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_UP
+node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_DOWN
+node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>
 ```
+
+Python fallback uses equivalent `python -m go2_agent_tool.cli ...` commands.
 
 ## Where To Put Files On Host Machine
 
