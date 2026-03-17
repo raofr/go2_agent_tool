@@ -53,6 +53,27 @@ node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --actio
 node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>
 ```
 
+YOLO detection (Node.js):
+
+```bash
+cd node
+node src/cli.js --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name yolo
+node src/cli.js --endpoint 192.168.51.213:50051 detect-once --session-id <id> --model-path /home/unitree/workspace/unitree_sdk2/models/yolo26/aarch64/yolo26s.engine
+node src/cli.js --endpoint 192.168.51.213:50051 detect-start --session-id <id> --stream-id yolo-main --model-path /home/unitree/workspace/unitree_sdk2/models/yolo26/aarch64/yolo26s.engine --frame-skip 1 --fps-limit 5
+node src/cli.js --endpoint 192.168.51.213:50051 detect-subscribe --session-id <id> --stream-id yolo-main
+node src/cli.js --endpoint 192.168.51.213:50051 detect-stop --session-id <id> --stream-id yolo-main
+node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>
+```
+
+Audio (Node.js):
+
+```bash
+cd node
+node src/cli.js --endpoint 192.168.51.213:50051 audio-upload-play --session-id <id> --stream-id audio-main --file /tmp/beep.opus --mime audio/opus --sample-rate 48000 --channels 1 --volume 1.0
+node src/cli.js --endpoint 192.168.51.213:50051 audio-status --session-id <id>
+node src/cli.js --endpoint 192.168.51.213:50051 audio-stop --session-id <id> --stream-id audio-main
+```
+
 Python equivalent:
 
 ```bash
@@ -61,6 +82,17 @@ python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 open-session --owne
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_RECOVERY_STAND
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_UP
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_DOWN
+python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 close-session --session-id <id>
+```
+
+YOLO detection (Python):
+
+```bash
+python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name yolo
+python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 detect-once --session-id <id> --model-path /home/unitree/workspace/unitree_sdk2/models/yolo26/aarch64/yolo26s.engine
+python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 detect-start --session-id <id> --stream-id yolo-main --model-path /home/unitree/workspace/unitree_sdk2/models/yolo26/aarch64/yolo26s.engine --frame-skip 1 --fps-limit 5
+python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 detect-subscribe --session-id <id> --stream-id yolo-main
+python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 detect-stop --session-id <id> --stream-id yolo-main
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 close-session --session-id <id>
 ```
 

@@ -139,6 +139,105 @@ class Go2SportClient {
   getServerStatus() {
     return this._call("GetServerStatus", {});
   }
+
+  detectOnce({
+    sessionId,
+    modelPath = "",
+    confThres = 0.25,
+    iouThres = 0.45,
+    maxDet = 100,
+  }) {
+    return this._call("DetectObjects", {
+      session_id: sessionId,
+      model_path: modelPath,
+      conf_thres: Number(confThres),
+      iou_thres: Number(iouThres),
+      max_det: Number(maxDet),
+    });
+  }
+
+  startDetection({
+    sessionId,
+    streamId = "",
+    modelPath = "",
+    confThres = 0.25,
+    iouThres = 0.45,
+    maxDet = 100,
+    frameSkip = 0,
+    fpsLimit = 5,
+  }) {
+    return this._call("StartDetection", {
+      session_id: sessionId,
+      stream_id: streamId,
+      model_path: modelPath,
+      conf_thres: Number(confThres),
+      iou_thres: Number(iouThres),
+      max_det: Number(maxDet),
+      frame_skip: Number(frameSkip),
+      fps_limit: Number(fpsLimit),
+    });
+  }
+
+  stopDetection({ sessionId, streamId }) {
+    return this._call("StopDetection", {
+      session_id: sessionId,
+      stream_id: streamId,
+    });
+  }
+
+  subscribeDetections({ sessionId, streamId, onEvent, onError, onEnd }) {
+    const stream = this.client.SubscribeDetections({
+      session_id: sessionId,
+      stream_id: streamId,
+    });
+    stream.on("data", (event) => {
+      if (typeof onEvent === "function") onEvent(event);
+    });
+    stream.on("error", (err) => {
+      if (typeof onError === "function") onError(err);
+    });
+    stream.on("end", () => {
+      if (typeof onEnd === "function") onEnd();
+    });
+    return stream;
+  }
+
+  uploadAndPlayAudio({
+    sessionId,
+    streamId = "",
+    audioBytes,
+    mime = "audio/opus",
+    sampleRate = 48000,
+    channels = 1,
+    volume = 1.0,
+    loop = false,
+    requestId = "",
+  }) {
+    return this._call("UploadAndPlayAudio", {
+      session_id: sessionId,
+      stream_id: streamId,
+      audio_bytes: audioBytes,
+      mime,
+      sample_rate: Number(sampleRate),
+      channels: Number(channels),
+      volume: Number(volume),
+      loop: Boolean(loop),
+      request_id: requestId,
+    });
+  }
+
+  getAudioStatus({ sessionId }) {
+    return this._call("GetAudioStatus", {
+      session_id: sessionId,
+    });
+  }
+
+  stopAudioPlayback({ sessionId, streamId = "" }) {
+    return this._call("StopAudioPlayback", {
+      session_id: sessionId,
+      stream_id: streamId,
+    });
+  }
 }
 
 module.exports = {
