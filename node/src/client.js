@@ -273,6 +273,44 @@ class Go2SportClient {
       stream_id: streamId,
     });
   }
+
+  startMicrophone({
+    sessionId,
+    streamId = "",
+    sampleRate = 48000,
+    channels = 1,
+  }) {
+    return this._call("StartMicrophone", {
+      session_id: sessionId,
+      stream_id: streamId,
+      sample_rate: Number(sampleRate),
+      channels: Number(channels),
+    });
+  }
+
+  stopMicrophone({ sessionId, streamId }) {
+    return this._call("StopMicrophone", {
+      session_id: sessionId,
+      stream_id: streamId,
+    });
+  }
+
+  subscribeMicrophone({ sessionId, streamId, onAudio, onError, onEnd }) {
+    const stream = this.client.SubscribeMicrophone({
+      session_id: sessionId,
+      stream_id: streamId,
+    });
+    stream.on("data", (audio) => {
+      if (typeof onAudio === "function") onAudio(audio);
+    });
+    stream.on("error", (err) => {
+      if (typeof onError === "function") onError(err);
+    });
+    stream.on("end", () => {
+      if (typeof onEnd === "function") onEnd();
+    });
+    return stream;
+  }
 }
 
 function discoverGo2SportEndpoint({

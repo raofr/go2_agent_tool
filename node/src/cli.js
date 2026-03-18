@@ -32,7 +32,7 @@ function toBool(v) {
 }
 
 function usage() {
-  console.log(`go2-agent-tool (node)\n\nUsage:\n  node src/cli.js [--endpoint host:port] [--timeout sec] <command> [args]\n\nCommands:\n  discover-endpoint [--discovery-port 50052] [--discovery-timeout-ms 5000] [--prefer-ipv6] [--ipv6-wait-ms 300]\n  status\n  open-session --owner <owner> [--session-name name] [--ttl-sec 30] [--parallel]\n  heartbeat --session-id <id>\n  close-session --session-id <id>\n  force-close-owner --owner <owner> [--keep-parallel-sessions]\n  action --session-id <id> --action <ACTION_...> [--vx n --vy n --vyaw n --roll n --pitch n --yaw n --level n --flag]\n  detect-once --session-id <id> [--model-path p --conf-thres f --iou-thres f --max-det n]\n  detect-start --session-id <id> [--stream-id id --model-path p --frame-skip n --fps-limit n]\n  detect-stop --session-id <id> --stream-id <id>\n  detect-subscribe --session-id <id> --stream-id <id>\n  audio-upload-play --session-id <id> --file <audio_file> [--stream-id id --mime audio/opus --sample-rate 48000 --channels 1 --volume 1.0 --loop --request-id id]\n  audio-status --session-id <id>\n  audio-stop --session-id <id> [--stream-id id]\n\nAction enum count: ${ACTIONS.length}`);
+  console.log(`go2-agent-tool (node)\n\nUsage:\n  node src/cli.js [--endpoint host:port] [--timeout sec] <command> [args]\n\nCommands:\n  discover-endpoint [--discovery-port 50052] [--discovery-timeout-ms 5000] [--prefer-ipv6] [--ipv6-wait-ms 300]\n  status\n  open-session --owner <owner> [--session-name name] [--ttl-sec 30] [--parallel]\n  heartbeat --session-id <id>\n  close-session --session-id <id>\n  force-close-owner --owner <owner> [--keep-parallel-sessions]\n  action --session-id <id> --action <ACTION_...> [--vx n --vy n --vyaw n --roll n --pitch n --yaw n --level n --flag]\n  detect-once --session-id <id> [--model-path p --conf-thres f --iou-thres f --max-det n]\n  detect-start --session-id <id> [--stream-id id --model-path p --frame-skip n --fps-limit n]\n  detect-stop --session-id <id> --stream-id <id>\n  detect-subscribe --session-id <id> --stream-id <id>\n  audio-upload-play --session-id <id> --file <audio_file> [--stream-id id --mime audio/opus --sample-rate 48000 --channels 1 --volume 1.0 --loop --request-id id]\n  audio-status --session-id <id>\n  audio-stop --session-id <id> [--stream-id id]\n  mic-start --session-id <id> [--stream-id id --sample-rate 48000 --channels 1]\n  mic-stop --session-id <id> --stream-id <id>\n  mic-subscribe --session-id <id> --stream-id <id>\n\nAction enum count: ${ACTIONS.length}`);
 }
 
 async function main() {
@@ -230,6 +230,49 @@ async function main() {
         streamId: args["stream-id"] || "",
       });
       console.log(JSON.stringify({ stopped: Boolean(resp.stopped) }));
+      return;
+    }
+
+    if (cmd === "mic-start") {
+      if (!args["session-id"]) throw new Error("--session-id is required");
+      const resp = await client.startMicrophone({
+        sessionId: args["session-id"],
+        streamId: args["stream-id"] || "",
+        sampleRate: Number(args["sample-rate"] || 48000),
+        channels: Number(args.channels || 1),
+      });
+      console.log(JSON.stringify({ stream_id: resp.stream_id || "" }));
+      return;
+    }
+
+    if (cmd === "mic-stop") {
+      if (!args["session-id"]) throw new Error("--session-id is required");
+      if (!args["stream-id"]) throw new Error("--stream-id is required");
+      const resp = await client.stopMicrophone({
+        sessionId: args["session-id"],
+        streamId: args["stream-id"],
+      });
+      console.log(JSON.stringify({ stopped: Boolean(resp.stopped) }));
+      return;
+    }
+
+    if (cmd === "mic-subscribe") {
+      if (!args["session-id"]) throw new Error("--session-id is required");
+      if (!args["stream-id"]) throw new Error("--stream-id is required");
+      await new Promise((resolve, reject) => {
+        client.subscribeMicrophone({
+          sessionId: args["session-id"],
+          streamId: args["stream-id"],
+          onAudio: (audio) => console.log(JSON.stringify({
+            stream_id: audio.stream_id || "",
+            timestamp_ms: Number(audio.timestamp_ms || 0),
+            is_silence: Boolean(audio.is_silence),
+            audio_data_len: audio.audio_data ? audio.audio_data.length : 0,
+          })),
+          onError: (err) => reject(err),
+          onEnd: () => resolve(),
+        });
+      });
       return;
     }
 
