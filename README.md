@@ -39,6 +39,32 @@ cd go2_agent_tool/node
 node src/cli.js --endpoint 192.168.51.213:50051 status
 ```
 
+## Auto-discover Go2 Endpoint (UDP)
+
+`go2_sport_grpc_server` now sends dual-stack UDP discovery packets every second on port `50052`:
+
+- IPv4 broadcast (`255.255.255.255`)
+- IPv6 multicast (`ff02::1`, link-local scope)
+
+Node.js client listens on both `udp4` and `udp6`, and prefers IPv6 by default (falls back to IPv4):
+
+```bash
+cd go2_agent_tool/node
+node src/cli.js discover-endpoint --discovery-port 50052 --discovery-timeout-ms 5000 --prefer-ipv6
+```
+
+Example output:
+
+```json
+{"service":"go2_sport_grpc","family":"ipv6","ip":"fe80::1234:5678%en0","port":50051,"endpoint":"[fe80::1234:5678%en0]:50051","senderIp":"fe80::1234:5678","discoveredAtMs":1710000000000}
+```
+
+Then use the discovered endpoint in other commands:
+
+```bash
+node src/cli.js --endpoint "[fe80::1234:5678%en0]:50051" status
+```
+
 ## CLI Usage
 
 OpenClaw recommended (Node.js):

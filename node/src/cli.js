@@ -32,7 +32,7 @@ function toBool(v) {
 }
 
 function usage() {
-  console.log(`go2-agent-tool (node)\n\nUsage:\n  node src/cli.js [--endpoint host:port] [--timeout sec] <command> [args]\n\nCommands:\n  status\n  open-session --owner <owner> [--session-name name] [--ttl-sec 30] [--parallel]\n  heartbeat --session-id <id>\n  close-session --session-id <id>\n  force-close-owner --owner <owner> [--keep-parallel-sessions]\n  action --session-id <id> --action <ACTION_...> [--vx n --vy n --vyaw n --roll n --pitch n --yaw n --level n --flag]\n  detect-once --session-id <id> [--model-path p --conf-thres f --iou-thres f --max-det n]\n  detect-start --session-id <id> [--stream-id id --model-path p --frame-skip n --fps-limit n]\n  detect-stop --session-id <id> --stream-id <id>\n  detect-subscribe --session-id <id> --stream-id <id>\n  audio-upload-play --session-id <id> --file <audio_file> [--stream-id id --mime audio/opus --sample-rate 48000 --channels 1 --volume 1.0 --loop --request-id id]\n  audio-status --session-id <id>\n  audio-stop --session-id <id> [--stream-id id]\n\nAction enum count: ${ACTIONS.length}`);
+  console.log(`go2-agent-tool (node)\n\nUsage:\n  node src/cli.js [--endpoint host:port] [--timeout sec] <command> [args]\n\nCommands:\n  discover-endpoint [--discovery-port 50052] [--discovery-timeout-ms 5000] [--prefer-ipv6] [--ipv6-wait-ms 300]\n  status\n  open-session --owner <owner> [--session-name name] [--ttl-sec 30] [--parallel]\n  heartbeat --session-id <id>\n  close-session --session-id <id>\n  force-close-owner --owner <owner> [--keep-parallel-sessions]\n  action --session-id <id> --action <ACTION_...> [--vx n --vy n --vyaw n --roll n --pitch n --yaw n --level n --flag]\n  detect-once --session-id <id> [--model-path p --conf-thres f --iou-thres f --max-det n]\n  detect-start --session-id <id> [--stream-id id --model-path p --frame-skip n --fps-limit n]\n  detect-stop --session-id <id> --stream-id <id>\n  detect-subscribe --session-id <id> --stream-id <id>\n  audio-upload-play --session-id <id> --file <audio_file> [--stream-id id --mime audio/opus --sample-rate 48000 --channels 1 --volume 1.0 --loop --request-id id]\n  audio-status --session-id <id>\n  audio-stop --session-id <id> [--stream-id id]\n\nAction enum count: ${ACTIONS.length}`);
 }
 
 async function main() {
@@ -48,6 +48,17 @@ async function main() {
   const client = new Go2SportClient(endpoint, timeout);
 
   try {
+    if (cmd === "discover-endpoint") {
+      const resp = await client.discoverEndpoint({
+        discoveryPort: Number(args["discovery-port"] || 50052),
+        timeoutMs: Number(args["discovery-timeout-ms"] || 5000),
+        preferIpv6: args["prefer-ipv6"] === undefined ? true : toBool(args["prefer-ipv6"]),
+        ipv6WaitMs: Number(args["ipv6-wait-ms"] || 300),
+      });
+      console.log(JSON.stringify(resp));
+      return;
+    }
+
     if (cmd === "status") {
       const resp = await client.getServerStatus();
       console.log(JSON.stringify(resp));

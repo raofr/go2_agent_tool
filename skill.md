@@ -63,7 +63,9 @@ OpenClaw preferred (Node.js):
 
 ```bash
 cd node
-node src/cli.js --endpoint 192.168.51.213:50051 status
+node src/cli.js discover-endpoint --discovery-port 50052 --discovery-timeout-ms 5000 --prefer-ipv6
+# record endpoint from JSON output, then:
+node src/cli.js --endpoint "<DISCOVERED_ENDPOINT>" status
 ```
 
 Python equivalent:
@@ -77,6 +79,36 @@ If RPC fails, ask operator to start server on dock host (`192.168.51.213`) first
 ## Endpoint Configuration (Important)
 
 Default endpoint is `192.168.51.213:50051`, but this may differ per network setup.
+
+Preferred way: listen UDP discovery first, then use discovered endpoint.
+
+Discovery is dual-stack:
+
+- IPv4 broadcast + IPv6 multicast
+- Node.js client listens on both
+- Node.js client prefers IPv6 by default (`--prefer-ipv6`)
+
+Node.js discovery command:
+
+```bash
+cd node
+node src/cli.js discover-endpoint --discovery-port 50052 --discovery-timeout-ms 5000 --prefer-ipv6
+```
+
+Discovery JSON includes:
+
+- `family` (`ipv6` or `ipv4`)
+- `ip`
+- `port`
+- `endpoint` (`ip:port`)
+
+Use `endpoint` value for all subsequent CLI calls.
+
+For IPv6 endpoint, use bracket format:
+
+```bash
+node src/cli.js --endpoint "[fe80::1234:5678%en0]:50051" status
+```
 
 If endpoint is wrong, user must provide the actual dock host IP and update all CLI calls:
 
