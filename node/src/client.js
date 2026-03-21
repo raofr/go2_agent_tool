@@ -296,9 +296,11 @@ class Go2SportClient {
   }
 
   subscribeMicrophone({ sessionId, streamId, onAudio, onError, onEnd }) {
-    const stream = this.client.SubscribeMicrophone({
-      session_id: sessionId,
+    const stream = this.client.SubscribeMicrophone();
+    // Server expects bidi control frames: first frame must be COMMAND_START.
+    stream.write({
       stream_id: streamId,
+      command: 1,
     });
     stream.on("data", (audio) => {
       if (typeof onAudio === "function") onAudio(audio);
@@ -309,6 +311,14 @@ class Go2SportClient {
     stream.on("end", () => {
       if (typeof onEnd === "function") onEnd();
     });
+    stream.stop = () => {
+      try {
+        stream.write({ stream_id: streamId, command: 2 });
+      } catch (_) {}
+      try {
+        stream.end();
+      } catch (_) {}
+    };
     return stream;
   }
 }
