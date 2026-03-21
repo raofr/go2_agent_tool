@@ -132,47 +132,53 @@ Proceed only when ping succeeds and `status` RPC is reachable.
 
 ## ActionName Full Enum List
 
-All supported values for `--action`:
+Reference: Unitree sports services docs  
+<https://support.unitree.com/home/zh/developer/sports_services?utm_source=chatgpt.com>
 
-- ACTION_DAMP
-- ACTION_BALANCE_STAND
-- ACTION_STOP_MOVE
-- ACTION_STAND_UP
-- ACTION_STAND_DOWN
-- ACTION_RECOVERY_STAND
-- ACTION_EULER
-- ACTION_MOVE
-- ACTION_SIT
-- ACTION_RISE_SIT
-- ACTION_SPEED_LEVEL
-- ACTION_HELLO
-- ACTION_STRETCH
-- ACTION_SWITCH_JOYSTICK
-- ACTION_CONTENT
-- ACTION_HEART
-- ACTION_POSE
-- ACTION_SCRAPE
-- ACTION_FRONT_FLIP
-- ACTION_FRONT_JUMP
-- ACTION_FRONT_POUNCE
-- ACTION_DANCE1
-- ACTION_DANCE2
-- ACTION_LEFT_FLIP
-- ACTION_BACK_FLIP
-- ACTION_HAND_STAND
-- ACTION_FREE_WALK
-- ACTION_FREE_BOUND
-- ACTION_FREE_JUMP
-- ACTION_FREE_AVOID
-- ACTION_CLASSIC_WALK
-- ACTION_WALK_UPRIGHT
-- ACTION_CROSS_STEP
-- ACTION_AUTO_RECOVER_SET
-- ACTION_AUTO_RECOVER_GET
-- ACTION_STATIC_WALK
-- ACTION_TROT_RUN
-- ACTION_ECONOMIC_GAIT
-- ACTION_SWITCH_AVOID_MODE
+All supported values for `--action` with brief function and parameters:
+
+- `ACTION_DAMP`: enter damping/relaxed state; no extra params.
+- `ACTION_BALANCE_STAND`: switch to balance stand mode; no extra params.
+- `ACTION_STOP_MOVE`: stop current movement command; no extra params.
+- `ACTION_STAND_UP`: stand up; no extra params.
+- `ACTION_STAND_DOWN`: stand down; no extra params.
+- `ACTION_RECOVERY_STAND`: recovery stand (recommended pre-action init); no extra params.
+- `ACTION_EULER`: body attitude control; required params: `roll`, `pitch`, `yaw`.
+  - `roll` range: `[-0.75, 0.75]` rad
+  - `pitch` range: `[-0.75, 0.75]` rad
+  - `yaw` range: `[-0.6, 0.6]` rad
+- `ACTION_MOVE`: velocity move control; required params: `vx`, `vy`, `vyaw`.
+- `ACTION_SIT`: sit down; no extra params.
+- `ACTION_RISE_SIT`: rise from sit posture; no extra params.
+- `ACTION_SPEED_LEVEL`: switch speed level; required param: `level`.
+- `ACTION_HELLO`: hello motion demo; no extra params.
+- `ACTION_STRETCH`: stretch motion; no extra params.
+- `ACTION_SWITCH_JOYSTICK`: switch joystick mode; optional param: `flag` (`true/false`).
+- `ACTION_CONTENT`: content/happy motion; no extra params.
+- `ACTION_HEART`: heart motion; no extra params.
+- `ACTION_POSE`: pose motion; no extra params.
+- `ACTION_SCRAPE`: scrape motion; no extra params.
+- `ACTION_FRONT_FLIP`: front flip; no extra params.
+- `ACTION_FRONT_JUMP`: front jump; no extra params.
+- `ACTION_FRONT_POUNCE`: front pounce; no extra params.
+- `ACTION_DANCE1`: dance preset 1; no extra params.
+- `ACTION_DANCE2`: dance preset 2; no extra params.
+- `ACTION_LEFT_FLIP`: left flip; no extra params.
+- `ACTION_BACK_FLIP`: back flip; no extra params.
+- `ACTION_HAND_STAND`: hand stand; optional param: `flag` (`true/false`).
+- `ACTION_FREE_WALK`: free walk gait; no extra params.
+- `ACTION_FREE_BOUND`: free bound gait; no extra params.
+- `ACTION_FREE_JUMP`: free jump gait/mode; no extra params.
+- `ACTION_FREE_AVOID`: free avoid mode; no extra params.
+- `ACTION_CLASSIC_WALK`: classic walk gait; no extra params.
+- `ACTION_WALK_UPRIGHT`: upright walk gait; no extra params.
+- `ACTION_CROSS_STEP`: cross step gait; no extra params.
+- `ACTION_AUTO_RECOVER_SET`: set auto recover switch; optional param: `flag` (`true/false`).
+- `ACTION_AUTO_RECOVER_GET`: get auto recover status; no extra params (returns status in response).
+- `ACTION_STATIC_WALK`: static walk gait; no extra params.
+- `ACTION_TROT_RUN`: trot run gait; no extra params.
+- `ACTION_ECONOMIC_GAIT`: economic gait mode; no extra params.
+- `ACTION_SWITCH_AVOID_MODE`: switch obstacle avoid mode; optional param: `flag` (`true/false`).
 
 ## Default Task Policy
 
@@ -213,8 +219,13 @@ Use this file to drive tool/agent argument validation for `action` command.
 	- `ACTION_MOVE` -> `vx`, `vy`, `vyaw`
 	- `ACTION_EULER` -> `roll`, `pitch`, `yaw`
 	- `ACTION_SPEED_LEVEL` -> `level`
+- `ACTION_EULER` value range:
+	- `roll`: `[-0.75, 0.75]` rad
+	- `pitch`: `[-0.75, 0.75]` rad
+	- `yaw`: `[-0.6, 0.6]` rad
 - Optional bool field (`flag`) allowed for:
 	- `ACTION_SWITCH_JOYSTICK`, `ACTION_HAND_STAND`, `ACTION_AUTO_RECOVER_SET`, `ACTION_SWITCH_AVOID_MODE`
+- All other actions: no extra parameters (only `session_id` + `action`).
 
 ## Minimal Smoke Test
 
