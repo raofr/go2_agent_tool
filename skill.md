@@ -80,11 +80,11 @@ Python equivalent:
 python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 status
 ```
 
-If RPC fails, ask operator to start server on dock host (`192.168.123.18`) first.
+If RPC fails, ask operator to start server on dock host (`192.168.51.213`) first.
 
 ## Endpoint Configuration (Important)
 
-Default endpoint is `192.168.123.18:50051`, but this may differ per network setup.
+Default endpoint is `192.168.51.213:50051`, but this may differ per network setup.
 
 Preferred way: listen UDP discovery first, then use discovered endpoint.
 
@@ -195,11 +195,11 @@ Important motion prerequisite:
 
 For each non-parallel task:
 
-1. `node src/cli.js --endpoint 192.168.123.18:50051 force-close-owner --owner openclaw`
-2. `node src/cli.js --endpoint 192.168.123.18:50051 open-session --owner openclaw --session-name <task_name>`
-3. `node src/cli.js --endpoint 192.168.123.18:50051 action --session-id <id> --action ACTION_RECOVERY_STAND`
-4. `node src/cli.js --endpoint 192.168.123.18:50051 action --session-id <id> --action <ACTION_...>`
-5. `node src/cli.js --endpoint 192.168.123.18:50051 close-session --session-id <id>`
+1. `node src/cli.js --endpoint 192.168.51.213:50051 force-close-owner --owner openclaw`
+2. `node src/cli.js --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name <task_name>`
+3. `node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_RECOVERY_STAND`
+4. `node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action <ACTION_...>`
+5. `node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>`
 
 For parallel task:
 
@@ -209,7 +209,7 @@ For parallel task:
 Node.js command template:
 
 ```bash
-node src/cli.js --endpoint 192.168.123.18:50051 <subcommand ...>
+node src/cli.js --endpoint 192.168.51.213:50051 <subcommand ...>
 ```
 
 ## Action Parameter JSON Mapping
@@ -236,11 +236,11 @@ Use this file to drive tool/agent argument validation for `action` command.
 ## Minimal Smoke Test
 
 ```bash
-node src/cli.js --endpoint 192.168.123.18:50051 open-session --owner openclaw --session-name smoke
-node src/cli.js --endpoint 192.168.123.18:50051 action --session-id <id> --action ACTION_RECOVERY_STAND
-node src/cli.js --endpoint 192.168.123.18:50051 action --session-id <id> --action ACTION_STAND_UP
-node src/cli.js --endpoint 192.168.123.18:50051 action --session-id <id> --action ACTION_STAND_DOWN
-node src/cli.js --endpoint 192.168.123.18:50051 close-session --session-id <id>
+node src/cli.js --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name smoke
+node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_RECOVERY_STAND
+node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_UP
+node src/cli.js --endpoint 192.168.51.213:50051 action --session-id <id> --action ACTION_STAND_DOWN
+node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>
 ```
 
 Python fallback uses equivalent `python -m go2_agent_tool.cli ...` commands.
@@ -251,18 +251,18 @@ Node.js (OpenClaw preferred):
 
 ```bash
 cd go2_agent_tool/node
-node src/cli.js --endpoint 192.168.123.18:50051 open-session --owner openclaw --session-name yolo
-node src/cli.js --endpoint 192.168.123.18:50051 detect-once --session-id <id> --model-path /home/unitree/workspace/unitree_sdk2/models/yolo26/aarch64/yolo26s.engine
-node src/cli.js --endpoint 192.168.123.18:50051 detect-start --session-id <id> --stream-id yolo-main --model-path /home/unitree/workspace/unitree_sdk2/models/yolo26/aarch64/yolo26s.engine --frame-skip 1 --fps-limit 5
-node src/cli.js --endpoint 192.168.123.18:50051 detect-subscribe --session-id <id> --stream-id yolo-main
-node src/cli.js --endpoint 192.168.123.18:50051 detect-stop --session-id <id> --stream-id yolo-main
-node src/cli.js --endpoint 192.168.123.18:50051 close-session --session-id <id>
+node src/cli.js --endpoint 192.168.51.213:50051 open-session --owner openclaw --session-name yolo
+node src/cli.js --endpoint 192.168.51.213:50051 detect-once --session-id <id> --model-path /home/unitree/workspace/unitree_sdk2/models/yolo26/aarch64/yolo26s.engine
+node src/cli.js --endpoint 192.168.51.213:50051 detect-start --session-id <id> --stream-id yolo-main --model-path /home/unitree/workspace/unitree_sdk2/models/yolo26/aarch64/yolo26s.engine --frame-skip 1 --fps-limit 5
+node src/cli.js --endpoint 192.168.51.213:50051 detect-subscribe --session-id <id> --stream-id yolo-main
+node src/cli.js --endpoint 192.168.51.213:50051 detect-stop --session-id <id> --stream-id yolo-main
+node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>
 ```
 
 Python fallback:
 
 ```bash
-python -m go2_agent_tool.cli --endpoint 192.168.123.18:50051 detect-once --session-id <id> --model-path /home/unitree/workspace/unitree_sdk2/models/yolo26/aarch64/yolo26s.engine
+python -m go2_agent_tool.cli --endpoint 192.168.51.213:50051 detect-once --session-id <id> --model-path /home/unitree/workspace/unitree_sdk2/models/yolo26/aarch64/yolo26s.engine
 ```
 
 ## Audio Commands
@@ -271,9 +271,9 @@ Node.js:
 
 ```bash
 cd go2_agent_tool/node
-node src/cli.js --endpoint 192.168.123.18:50051 --timeout 60 audio-upload-play --session-id <id> --stream-id audio-main --file /tmp/music_small.wav --mime audio/wav --sample-rate 16000 --channels 1 --volume 1.0
-node src/cli.js --endpoint 192.168.123.18:50051 audio-status --session-id <id>
-node src/cli.js --endpoint 192.168.123.18:50051 audio-stop --session-id <id> --stream-id audio-main
+node src/cli.js --endpoint 192.168.51.213:50051 --timeout 60 audio-upload-play --session-id <id> --stream-id audio-main --file /tmp/music_small.wav --mime audio/wav --sample-rate 16000 --channels 1 --volume 1.0
+node src/cli.js --endpoint 192.168.51.213:50051 audio-status --session-id <id>
+node src/cli.js --endpoint 192.168.51.213:50051 audio-stop --session-id <id> --stream-id audio-main
 ```
 
 Audio notes:
@@ -288,9 +288,9 @@ Node.js:
 
 ```bash
 cd go2_agent_tool/node
-node src/cli.js --endpoint 192.168.123.18:50051 mic-start --session-id <id> --stream-id mic-main --sample-rate 48000 --channels 1
-node src/cli.js --endpoint 192.168.123.18:50051 mic-subscribe --session-id <id> --stream-id mic-main
-node src/cli.js --endpoint 192.168.123.18:50051 mic-stop --session-id <id> --stream-id mic-main
+node src/cli.js --endpoint 192.168.51.213:50051 mic-start --session-id <id> --stream-id mic-main --sample-rate 48000 --channels 1
+node src/cli.js --endpoint 192.168.51.213:50051 mic-subscribe --session-id <id> --stream-id mic-main
+node src/cli.js --endpoint 192.168.51.213:50051 mic-stop --session-id <id> --stream-id mic-main
 ```
 
 ## Where To Put Files On Host Machine
