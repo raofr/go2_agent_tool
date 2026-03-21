@@ -337,6 +337,34 @@ function discoverGo2SportEndpoint({
     let timeoutTimer = null;
     let ipv6GraceTimer = null;
     let fallbackV4 = null;
+    const ipv4MappedSender = (senderIp) => {
+      if (typeof senderIp !== "string") return "";
+      if (!senderIp.startsWith("::ffff:")) return "";
+      const mapped = senderIp.slice(7);
+      return net.isIP(mapped) === 4 ? mapped : "";
+    };
+    const scoreIpv4Candidate = (candidate) => {
+      if (!candidate || candidate.family !== "ipv4") return -1;
+      let score = 0;
+      const senderV4 = ipv4MappedSender(candidate.senderIp);
+      if (senderV4 && senderV4 === candidate.ip) {
+        score += 10;
+      }
+      if (net.isIP(candidate.ip) === 4) {
+        score += 2;
+      }
+      if (candidate.senderIp && candidate.senderIp.includes(":")) {
+        score += 1;
+      }
+      return score;
+    };
+    const pickBetterIpv4 = (a, b) => {
+      if (!a) return b;
+      if (!b) return a;
+      const sa = scoreIpv4Candidate(a);
+      const sb = scoreIpv4Candidate(b);
+      return sb > sa ? b : a;
+    };
 
     const finish = (err, value) => {
       if (done) return;
@@ -440,7 +468,7 @@ function discoverGo2SportEndpoint({
         return;
       }
 
-      fallbackV4 = candidate;
+      fallbackV4 = pickBetterIpv4(fallbackV4, candidate);
       if (!ipv6GraceTimer) {
         ipv6GraceTimer = setTimeout(() => {
           if (fallbackV4) {
