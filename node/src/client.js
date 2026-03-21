@@ -1,5 +1,6 @@
 const path = require("path");
 const dgram = require("dgram");
+const net = require("net");
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 
@@ -366,7 +367,6 @@ function discoverGo2SportEndpoint({
       }
 
       const announcedFamily = String(payload.family || "").toLowerCase();
-      const ipFamily = announcedFamily === "ipv6" || family === "IPv6" ? "ipv6" : "ipv4";
       const advertisedPort = Number(payload.port);
       if (!Number.isFinite(advertisedPort) || advertisedPort <= 0 || advertisedPort > 65535) {
         return null;
@@ -376,14 +376,36 @@ function discoverGo2SportEndpoint({
       if (typeof advertisedIp !== "string" || !advertisedIp.length) {
         return null;
       }
+      // Normalize IPv4-mapped IPv6 (e.g. ::ffff:192.168.1.10) into pure IPv4.
+      if (advertisedIp.startsWith("::ffff:")) {
+        const mapped = advertisedIp.slice(7);
+        if (net.isIP(mapped) === 4) {
+          advertisedIp = mapped;
+        }
+      }
+
+      const advertisedIpVersion = net.isIP(advertisedIp);
+      const senderIsMappedV4 =
+        typeof rinfo.address === "string" &&
+        rinfo.address.startsWith("::ffff:") &&
+        net.isIP(rinfo.address.slice(7)) === 4;
+      let ipFamily = "ipv4";
+      if (advertisedIpVersion === 6) {
+        ipFamily = "ipv6";
+      } else if (advertisedIpVersion === 4) {
+        ipFamily = "ipv4";
+      } else if (announcedFamily === "ipv6") {
+        ipFamily = senderIsMappedV4 ? "ipv4" : "ipv6";
+      } else if (announcedFamily === "ipv4") {
+        ipFamily = "ipv4";
+      } else if (family === "IPv6") {
+        ipFamily = senderIsMappedV4 ? "ipv4" : "ipv6";
+      }
+
       let endpoint = `${advertisedIp}:${advertisedPort}`;
       if (ipFamily === "ipv6") {
-        if (advertisedIp.includes("%")) {
-          // grpc endpoint format: [fe80::1%en0]:50051
-          endpoint = `[${advertisedIp}]:${advertisedPort}`;
-        } else {
-          endpoint = `[${advertisedIp}]:${advertisedPort}`;
-        }
+        // grpc endpoint format: [fe80::1%en0]:50051
+        endpoint = `[${advertisedIp}]:${advertisedPort}`;
       }
 
       return {

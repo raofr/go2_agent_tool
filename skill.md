@@ -6,12 +6,6 @@ Use this GO2 client tool to control GO2 through gRPC service only.
 
 For OpenClaw, use Node.js CLI as first choice. Python is fallback only.
 
-Current runtime architecture for media:
-
-- Microphone receive: Python `go2_webrtc_connect` sidecar -> UDP bridge -> gRPC stream.
-- Audio playback: gRPC upload -> Python `go2_webrtc_connect` sidecar (AudioHub API).
-- Do not depend on C++ `webrtcbin` playback path.
-
 ## Download Source
 
 Preferred:
@@ -278,11 +272,11 @@ node src/cli.js --endpoint 192.168.51.213:50051 audio-stop --session-id <id> --s
 
 Audio notes:
 
-- Prefer WAV/MP3 for playback bridge (`go2_webrtc_connect` AudioHub path).
+- Prefer WAV/MP3 for playback.
 - Keep upload file small (recommended <= 1 MB) to avoid gRPC message-size errors.
 - If timeout occurs on upload, increase CLI `--timeout` (for example `--timeout 60`).
 
-## Microphone Commands (Python bridge path)
+## Microphone Commands
 
 Node.js:
 
