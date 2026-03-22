@@ -275,6 +275,8 @@ Audio notes:
 - Prefer WAV/MP3 for playback.
 - Keep upload file small (recommended <= 1 MB) to avoid gRPC message-size errors.
 - If timeout occurs on upload, increase CLI `--timeout` (for example `--timeout 60`).
+- Default behavior is preempt: sending a new `audio-upload-play` will interrupt current playback and switch to the new track.
+- For immediate track switch, call `audio-upload-play` directly; `audio-stop` is optional.
 
 ## Microphone Commands
 
