@@ -253,6 +253,18 @@ node src/cli.js --endpoint 192.168.51.213:50051 detect-stop --session-id <id> --
 node src/cli.js --endpoint 192.168.51.213:50051 close-session --session-id <id>
 ```
 
+Detection output fields:
+
+- `class_id`, `label`, `score`
+- `bbox.{x,y,w,h}` in pixel space
+- `bbox_w_ratio`, `bbox_h_ratio` (target width/height ratio in frame, range `0..1`)
+
+Recommended "person trigger" rule for frontend:
+
+- `class_id == 0` or `label == "person"`
+- `score > 0.6`
+- and (`bbox_w_ratio >= 0.2` or `bbox_h_ratio >= 0.2`)
+
 Python fallback:
 
 ```bash
